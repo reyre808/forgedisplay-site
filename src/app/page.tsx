@@ -9,182 +9,161 @@ export default function HomePage() {
   const [checkingIntro, setCheckingIntro] = useState(true);
 
   useEffect(() => {
-    const hasSeenIntro = sessionStorage.getItem("fd-intro-seen");
+    const hasSeenIntro = window.sessionStorage.getItem("fd-intro-seen");
 
     if (!hasSeenIntro) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEntered(false);
 
-      const timer = setTimeout(() => setShowCTA(true), 3000);
-      setCheckingIntro(false);
+      const timer = window.setTimeout(() => {
+        setShowCTA(true);
+        setCheckingIntro(false);
+      }, 3000);
 
-      return () => clearTimeout(timer);
+      return () => window.clearTimeout(timer);
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCheckingIntro(false);
   }, []);
 
+  function enterSite() {
+    window.sessionStorage.setItem("fd-intro-seen", "true");
+    setEntered(true);
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-white text-neutral-950">
-      {/* INTRO OVERLAY */}
       {!checkingIntro && !entered && (
-        <div className="fixed inset-0 z-50 transition-all duration-1000 opacity-100">
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-neutral-50 to-white" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05),transparent_45%)]" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-6 text-center">
+            <div className="mb-10">
+              <p className="text-sm font-medium uppercase tracking-[0.35em] text-neutral-500">
+                ForgeDisplay
+              </p>
+            </div>
 
-          <div className="relative flex min-h-screen items-center justify-center px-6">
-            <div className="w-full max-w-6xl">
-              <div className="relative flex min-h-[640px] items-center justify-center overflow-hidden rounded-[40px] border border-neutral-200 bg-white shadow-[0_30px_100px_rgba(0,0,0,0.08)]">
-                <div className="relative flex h-full w-full items-center justify-center px-6">
-                  <div className="absolute bottom-24 left-1/2 h-16 w-[360px] -translate-x-1/2 rounded-full bg-neutral-300/70 blur-3xl" />
+            <div className="relative mb-12 flex h-[340px] w-[520px] max-w-full items-center justify-center">
+              <div className="absolute bottom-10 h-14 w-72 rounded-full bg-neutral-300/70 blur-3xl" />
 
-                  <div className="fd-rotator relative h-[360px] w-[520px] [transform-style:preserve-3d]">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="relative h-[250px] w-[420px] rounded-[38px] border border-neutral-200 bg-gradient-to-b from-white to-neutral-100 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.14)]">
-                        <div className="absolute inset-4 rounded-[30px] border border-neutral-200 bg-white p-6">
-                          <div className="flex h-full flex-col justify-end rounded-[24px] border border-neutral-200 bg-gradient-to-b from-white to-neutral-50 p-6 shadow-inner">
-                            <div className="mb-5 text-center text-xs font-medium uppercase tracking-[0.32em] text-neutral-400">
-                              ForgeDisplay
-                            </div>
-
-                            <div className="mx-auto mb-6 flex h-20 w-[78%] items-center justify-center rounded-[20px] border border-neutral-200 bg-neutral-950 text-2xl font-black tracking-[0.18em] text-white shadow-sm">
-                              FD
-                            </div>
-
-                            <div className="mx-auto h-9 w-[58%] rounded-full border border-neutral-200 bg-white" />
-                          </div>
-                        </div>
-                      </div>
+              <div className="fd-rotator relative h-[240px] w-[420px]">
+                <div className="absolute inset-0 rounded-[38px] border border-neutral-200 bg-gradient-to-b from-white to-neutral-100 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.12)]">
+                  <div className="flex h-full flex-col justify-end rounded-[28px] border border-neutral-200 bg-white p-6 shadow-inner">
+                    <div className="mb-5 text-center text-xs font-medium uppercase tracking-[0.32em] text-neutral-400">
+                      Custom Display Stand
                     </div>
-                  </div>
 
-                  <div
-                    className={`absolute bottom-20 left-1/2 -translate-x-1/2 transition-all duration-700 ${
-                      showCTA
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-6 opacity-0"
-                    }`}
-                  >
-                    <button
-                      onClick={() => {
-                        sessionStorage.setItem("fd-intro-seen", "true");
-                        setEntered(true);
-                      }}
-                      className="rounded-2xl bg-neutral-950 px-8 py-4 text-lg font-semibold text-white shadow-[0_18px_50px_rgba(0,0,0,0.18)] transition hover:translate-y-[-1px]"
-                    >
-                      Customize Now
-                    </button>
+                    <div className="mx-auto mb-5 flex h-20 w-[78%] items-center justify-center rounded-[20px] border border-neutral-200 bg-neutral-950 text-2xl font-black tracking-[0.18em] text-white">
+                      FD
+                    </div>
+
+                    <div className="mx-auto h-9 w-[58%] rounded-full border border-neutral-200 bg-white" />
                   </div>
                 </div>
               </div>
+            </div>
+
+            <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
+              ForgeDisplay
+            </h1>
+
+            <p className="mt-4 text-lg text-neutral-600">
+              Custom Display Stands
+            </p>
+
+            <div
+              className={`mt-8 transition-all duration-700 ${
+                showCTA ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+            >
+              <button
+                onClick={enterSite}
+                className="rounded-2xl bg-black px-8 py-4 text-lg font-semibold text-white transition hover:bg-neutral-800"
+              >
+                Customize Now
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* MAIN HOMEPAGE */}
       <Navbar />
 
-      <section className="relative border-b border-neutral-200 bg-white">
-        <div className="mx-auto grid min-h-screen max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
-            <div className="inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-4 py-1 text-sm text-neutral-600">
-              Premium custom 3D printed display stands
-            </div>
+            <p className="inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-4 py-1 text-sm text-neutral-600">
+              Custom display stands designed to elevate your brand
+            </p>
 
-            <h1 className="mt-6 text-5xl font-black tracking-tight text-neutral-950 sm:text-6xl">
+            <h1 className="mt-6 text-5xl font-bold tracking-tight">
               ForgeDisplay
             </h1>
 
-            <p className="mt-5 max-w-2xl text-lg text-neutral-600">
-              Custom business card stands, trading card display stands, and
-              branded QR-integrated products built to help your brand stand out.
+            <p className="mt-6 text-xl text-neutral-600">
+              Premium custom display stands for collectors, card shops, events,
+              and branded business setups.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
               <a
-                href="/customization"
-                className="rounded-2xl bg-neutral-950 px-6 py-3 font-semibold text-white transition hover:translate-y-[-1px]"
+                href="/order"
+                className="inline-block rounded-xl bg-black px-8 py-4 font-semibold text-white transition hover:bg-neutral-800"
               >
-                Start Custom Order
+                Order Custom Stand
               </a>
-              <a
-                href="/qr"
-                className="rounded-2xl border border-neutral-200 px-6 py-3 font-semibold text-neutral-950 transition hover:bg-neutral-100"
-              >
-                Explore Products
-              </a>
-            </div>
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">Custom</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Built for branding
-                </div>
-              </div>
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">QR</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Marketing-ready options
-                </div>
-              </div>
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">Premium</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Clean modern display feel
-                </div>
-              </div>
+              <a
+                href="/customization"
+                className="inline-block rounded-xl border border-neutral-300 px-8 py-4 font-semibold text-neutral-900 transition hover:bg-neutral-50"
+              >
+                Explore Customization
+              </a>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm">
-              <div className="text-sm uppercase tracking-[0.2em] text-neutral-500">
-                Product
-              </div>
-              <div className="mt-3 text-2xl font-bold">
-                Business Card Stands
-              </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+              <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
+                Business
+              </p>
+              <h2 className="mt-4 text-2xl font-bold">Business Card Stands</h2>
               <p className="mt-3 text-neutral-600">
-                Clean branded desk displays for offices, vendors, and local
-                businesses.
+                Clean branded displays for counters, desks, receptions, and
+                storefronts.
               </p>
             </div>
 
-            <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm md:mt-10">
-              <div className="text-sm uppercase tracking-[0.2em] text-neutral-500">
-                Product
-              </div>
-              <div className="mt-3 text-2xl font-bold">
-                Trading Card Displays
-              </div>
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm sm:mt-10">
+              <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
+                Collector
+              </p>
+              <h2 className="mt-4 text-2xl font-bold">Card Display Stands</h2>
               <p className="mt-3 text-neutral-600">
-                Built for sports cards, slabs, livestream setups, and collector
+                Built for collectors, livestreams, shops, and product
                 presentation.
               </p>
             </div>
 
-            <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm">
-              <div className="text-sm uppercase tracking-[0.2em] text-neutral-500">
-                Feature
-              </div>
-              <div className="mt-3 text-2xl font-bold">
-                QR Code Integration
-              </div>
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+              <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
+                Brand
+              </p>
+              <h2 className="mt-4 text-2xl font-bold">Custom Branding</h2>
               <p className="mt-3 text-neutral-600">
-                Add permanent QR destinations for websites, socials, reviews,
-                and offers.
+                Add names, logos, colors, and custom details tailored to your
+                brand.
               </p>
             </div>
 
-            <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm md:mt-10">
-              <div className="text-sm uppercase tracking-[0.2em] text-neutral-500">
-                Future
-              </div>
-              <div className="mt-3 text-2xl font-bold">Full Customization</div>
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm sm:mt-10">
+              <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
+                Marketing
+              </p>
+              <h2 className="mt-4 text-2xl font-bold">QR Integration</h2>
               <p className="mt-3 text-neutral-600">
-                This site is being built to support account sign-ins, saved
-                orders, and live product customization later.
+                Turn your stand into a branded marketing tool with integrated QR
+                options.
               </p>
             </div>
           </div>
@@ -207,6 +186,7 @@ export default function HomePage() {
         .fd-rotator {
           animation: fdSweep 3s ease-in-out infinite;
           transform-origin: center center;
+          transform-style: preserve-3d;
         }
       `}</style>
     </main>
