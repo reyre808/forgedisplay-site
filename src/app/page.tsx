@@ -1,5 +1,5 @@
 "use client";
-
+import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
@@ -90,7 +90,9 @@ export default function HomePage() {
       </div>
 
       {/* MAIN HOMEPAGE */}
-      <section className="relative border-b border-neutral-200 bg-white">
+<Navbar />
+
+<section className="relative border-b border-neutral-200 bg-white">
         <div className="mx-auto grid min-h-screen max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
           <div>
             <div className="inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-4 py-1 text-sm text-neutral-600">
