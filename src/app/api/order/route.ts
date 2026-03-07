@@ -8,7 +8,6 @@ export async function POST(req: Request) {
   const notes = data.get("notes");
 
   console.log("NEW ORDER");
-
   console.log({
     name,
     email,
