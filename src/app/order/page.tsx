@@ -306,7 +306,7 @@ export default function OrderPage() {
 
               <p className="mt-4 text-sm leading-7 text-neutral-500">
                 Final pricing may adjust slightly depending on manufacturability,
-                file quality, and any last-minute design changes.
+                file quality, and any design changes.
               </p>
             </div>
           </div>
