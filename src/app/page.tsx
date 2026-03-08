@@ -38,39 +38,21 @@ export default function HomePage() {
       {!checkingIntro && !entered && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
           <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-6 text-center">
-            <div className="mb-10">
-              <p className="text-sm font-medium uppercase tracking-[0.35em] text-neutral-500">
-                ForgeDisplay
-              </p>
-            </div>
-
-            <div className="relative mb-12 flex h-[340px] w-[520px] max-w-full items-center justify-center">
-              <div className="absolute bottom-10 h-14 w-72 rounded-full bg-neutral-300/70 blur-3xl" />
-
-              <div className="fd-rotator relative h-[240px] w-[420px]">
-                <div className="absolute inset-0 rounded-[38px] border border-neutral-200 bg-gradient-to-b from-white to-neutral-100 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.12)]">
-                  <div className="flex h-full flex-col justify-end rounded-[28px] border border-neutral-200 bg-white p-6 shadow-inner">
-                    <div className="mb-5 text-center text-xs font-medium uppercase tracking-[0.32em] text-neutral-400">
-                      Custom Display Stand
-                    </div>
-
-                    <div className="mx-auto mb-5 flex h-20 w-[78%] items-center justify-center rounded-[20px] border border-neutral-200 bg-neutral-950 text-2xl font-black tracking-[0.18em] text-white">
-                      FD
-                    </div>
-
-                    <div className="mx-auto h-9 w-[58%] rounded-full border border-neutral-200 bg-white" />
-                  </div>
-                </div>
+            <div className="relative mb-10 flex items-center justify-center">
+              <div className="absolute top-[82%] h-12 w-72 rounded-full bg-black/10 blur-2xl" />
+              <div className="fd-logo-rotator">
+                <Image
+                  src="/logo/forgedisplay-logo-transparent.png"
+                  alt="ForgeDisplay"
+                  width={700}
+                  height={700}
+                  priority
+                  className="h-auto w-[300px] sm:w-[420px] md:w-[520px]"
+                />
               </div>
             </div>
 
-            <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
-              ForgeDisplay
-            </h1>
-
-            <p className="mt-4 text-lg text-neutral-600">
-              Custom Display Stands
-            </p>
+            <p className="text-lg text-neutral-600">Custom Display Stands</p>
 
             <div
               className={`mt-8 transition-all duration-700 ${
@@ -121,39 +103,16 @@ export default function HomePage() {
                 Explore Customization
               </a>
             </div>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">Custom</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Built for branding
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">Clean</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Premium presentation
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-                <div className="text-2xl font-black">Functional</div>
-                <div className="mt-1 text-sm text-neutral-500">
-                  Made to display products
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="flex justify-center">
             <div className="rounded-[32px] border border-neutral-200 bg-white p-4 shadow-[0_30px_80px_rgba(0,0,0,0.08)]">
               <Image
                 src="/products/rams-angle.png"
-                alt="ForgeDisplay custom stand"
-                width={900}
-                height={900}
-                className="w-full max-w-[620px] rounded-[28px] object-contain shadow-[0_40px_120px_rgba(0,0,0,0.15)]"
+                alt="Custom branded display stand"
+                width={700}
+                height={700}
+                className="h-auto w-full max-w-[520px] rounded-[24px] object-contain"
                 priority
               />
             </div>
@@ -182,31 +141,26 @@ export default function HomePage() {
               title="Branded Counter Display"
               text="Clean front-facing custom branding for desks, counters, and retail spaces."
             />
-
             <GalleryCard
               image="/products/rams-side.png"
               title="Angled Product View"
               text="Shows the shape, depth, and quality of the stand from a premium angle."
             />
-
             <GalleryCard
               image="/products/scorebig-holder.png"
               title="Business Card Holder"
               text="Built for business cards, counter displays, and brand visibility."
             />
-
             <GalleryCard
               image="/products/scorebig-box.png"
               title="Box and Product Display"
               text="Designed to support product boxes and elevate merchandise presentation."
             />
-
             <GalleryCard
               image="/products/elite-closeup.png"
               title="Custom Name Display"
               text="Bold branded lettering for shops, creators, livestreams, and event tables."
             />
-
             <GalleryCard
               image="/products/rams-angle.png"
               title="Collector and Shop Use"
@@ -216,46 +170,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className="grid gap-6 lg:grid-cols-4">
-          <FeatureCard
-            eyebrow="Business"
-            title="Business Card Stands"
-            text="Clean branded displays for counters, desks, receptions, and storefronts."
-          />
-          <FeatureCard
-            eyebrow="Collector"
-            title="Card Display Stands"
-            text="Built for collectors, livestreams, shops, and product presentation."
-          />
-          <FeatureCard
-            eyebrow="Brand"
-            title="Custom Branding"
-            text="Add names, logos, colors, and details tailored to your brand."
-          />
-          <FeatureCard
-            eyebrow="Marketing"
-            title="QR Integration"
-            text="Turn your stand into a branded marketing tool with integrated QR options."
-          />
-        </div>
-      </section>
-
       <style jsx global>{`
-        @keyframes fdSweep {
+        @keyframes fdLogoRotate {
           0% {
-            transform: perspective(1400px) rotateY(-18deg);
+            transform: perspective(1200px) rotateY(-10deg);
           }
           50% {
-            transform: perspective(1400px) rotateY(18deg);
+            transform: perspective(1200px) rotateY(10deg);
           }
           100% {
-            transform: perspective(1400px) rotateY(-18deg);
+            transform: perspective(1200px) rotateY(-10deg);
           }
         }
 
-        .fd-rotator {
-          animation: fdSweep 3s ease-in-out infinite;
+        .fd-logo-rotator {
+          animation: fdLogoRotate 3s ease-in-out infinite;
           transform-origin: center center;
           transform-style: preserve-3d;
         }
@@ -285,26 +214,6 @@ function GalleryCard({
         />
       </div>
       <h3 className="mt-5 text-2xl font-bold tracking-tight">{title}</h3>
-      <p className="mt-3 text-neutral-600">{text}</p>
-    </div>
-  );
-}
-
-function FeatureCard({
-  eyebrow,
-  title,
-  text,
-}: {
-  eyebrow: string;
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm">
-      <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
-        {eyebrow}
-      </p>
-      <h3 className="mt-4 text-2xl font-bold">{title}</h3>
       <p className="mt-3 text-neutral-600">{text}</p>
     </div>
   );

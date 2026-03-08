@@ -1,35 +1,34 @@
-"use client";
+import Image from "next/image"
+import Link from "next/link"
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <div className="text-xl font-black tracking-tight">
-          ForgeDisplay
-        </div>
+    <nav className="flex items-center justify-between px-8 py-4 border-b">
+      
+      <Link href="/" className="flex items-center gap-3">
+        <Image
+          src="/logo/forgedisplay-logo-white.png"
+          alt="ForgeDisplay"
+          width={160}
+          height={50}
+          priority
+        />
+      </Link>
 
-        <nav className="flex gap-6 text-sm font-medium text-neutral-700">
-          <a href="/customization" className="hover:text-black">
-            Customization
-          </a>
-
-          <a href="/qr" className="hover:text-black">
-            QR Integration
-          </a>
-
-          <a href="/reviews" className="hover:text-black">
-            Reviews
-          </a>
-
-          <a href="/contact" className="hover:text-black">
-            Contact
-          </a>
-        </nav>
-
-        <button className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white">
-          Customize
-        </button>
+      <div className="flex items-center gap-8 text-sm font-medium">
+        <Link href="/customization">Customization</Link>
+        <Link href="/qr">QR Integration</Link>
+        <Link href="/reviews">Reviews</Link>
+        <Link href="/contact">Contact</Link>
       </div>
-    </header>
-  );
+
+      <Link
+        href="/customization"
+        className="bg-black text-white px-5 py-2 rounded-lg"
+      >
+        Customize
+      </Link>
+
+    </nav>
+  )
 }
