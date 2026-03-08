@@ -28,6 +28,13 @@ const colors: ColorOption[] = [
   { name: "Khaki", hex: "#B6A168" },
 ];
 
+const BUSINESS_CARD_BASE_PRICE = 40;
+const CARD_STAND_BASE_PRICE = 45;
+const EXTRA_COLOR_PRICE = 5;
+const LOGO_UPLOAD_PRICE = 10;
+const PREMIUM_FINISH_PRICE = 9;
+const MAX_COLORS = 4;
+
 export default function CustomizationPage() {
   const router = useRouter();
 
@@ -40,6 +47,8 @@ export default function CustomizationPage() {
 
   const [baseColor, setBaseColor] = useState("Black");
   const [accentColor, setAccentColor] = useState("White");
+  const [thirdColor, setThirdColor] = useState("");
+  const [fourthColor, setFourthColor] = useState("");
 
   const [logoFileName, setLogoFileName] = useState("");
   const [logoStyle, setLogoStyle] = useState<BusinessLogoStyle>("raised");
@@ -49,6 +58,7 @@ export default function CustomizationPage() {
   const [cardStopStyle, setCardStopStyle] =
     useState<CardStopStyle>("raised-text-stop");
 
+  const [premiumFinish, setPremiumFinish] = useState(false);
   const [notes, setNotes] = useState("");
 
   function handleLogoUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -70,36 +80,35 @@ export default function CustomizationPage() {
 
   const displayTextLines = [line1, line2, line3].filter(Boolean);
 
+  const selectedColors = useMemo(() => {
+    return [baseColor, accentColor, thirdColor, fourthColor].filter(Boolean);
+  }, [baseColor, accentColor, thirdColor, fourthColor]);
+
+  const uniqueColors = useMemo(() => {
+    return Array.from(new Set(selectedColors));
+  }, [selectedColors]);
+
+  const extraColorCount = useMemo(() => {
+    return Math.max(0, uniqueColors.length - 1);
+  }, [uniqueColors]);
+
   const basePrice = useMemo(() => {
-    return productType === "business-card" ? 24 : 20;
+    return productType === "business-card"
+      ? BUSINESS_CARD_BASE_PRICE
+      : CARD_STAND_BASE_PRICE;
   }, [productType]);
 
-  const extraColorCharge = useMemo(() => {
-    return baseColor !== accentColor ? 6 : 0;
-  }, [baseColor, accentColor]);
+  const extraColorCharge = extraColorCount * EXTRA_COLOR_PRICE;
+  const logoCharge = logoFileName ? LOGO_UPLOAD_PRICE : 0;
+  const premiumFinishCharge = premiumFinish ? PREMIUM_FINISH_PRICE : 0;
 
-  const logoCharge = useMemo(() => {
-    return logoFileName ? 8 : 0;
-  }, [logoFileName]);
+  const estimatedPrice =
+    basePrice + extraColorCharge + logoCharge + premiumFinishCharge;
 
-  const premiumFinishCharge = useMemo(() => {
-    if (productType === "business-card") {
-      return logoStyle === "engraved-fill" ||
-        logoStyle === "flat-inlay" ||
-        logoStyle === "logo-plate"
-        ? 6
-        : 0;
-    }
-
-    return cardStopStyle === "solid-front-lip" ? 0 : 4;
-  }, [productType, logoStyle, cardStopStyle]);
-
-  const estimatedPrice = basePrice + extraColorCharge + logoCharge + premiumFinishCharge;
-
-  const baseHex =
-    colors.find((c) => c.name === baseColor)?.hex ?? "#111111";
-  const accentHex =
-    colors.find((c) => c.name === accentColor)?.hex ?? "#F5F5F5";
+  const baseHex = colors.find((c) => c.name === baseColor)?.hex ?? "#111111";
+  const accentHex = colors.find((c) => c.name === accentColor)?.hex ?? "#F5F5F5";
+  const thirdHex = colors.find((c) => c.name === thirdColor)?.hex ?? accentHex;
+  const fourthHex = colors.find((c) => c.name === fourthColor)?.hex ?? accentHex;
 
   function continueToOrder() {
     const config = {
@@ -111,14 +120,25 @@ export default function CustomizationPage() {
       line3,
       baseColor,
       accentColor,
+      thirdColor,
+      fourthColor,
+      uniqueColors,
       logoFileName,
       logoStyle,
       logoPlacement,
       cardStopStyle,
+      premiumFinish,
       notes,
-      qrIncluded: true,
-      qrPlacement: "Underside of base",
-      estimatedPrice,
+      forgeDisplaySignature: true,
+      signaturePlacement: "Underside of base",
+      pricing: {
+        basePrice,
+        extraColorCount,
+        extraColorCharge,
+        logoCharge,
+        premiumFinishCharge,
+        estimatedPrice,
+      },
     };
 
     window.sessionStorage.setItem("fd-custom-config", JSON.stringify(config));
@@ -135,10 +155,10 @@ export default function CustomizationPage() {
           <h1 className="mt-4 text-5xl font-bold tracking-tight">
             Build your custom stand
           </h1>
-          <p className="mt-5 text-lg text-neutral-600">
-            Configure your stand using approved options designed to stay inside
-            real production limits. Your preview updates in real time as you
-            customize.
+          <p className="mt-5 text-lg leading-8 text-neutral-600">
+            Choose from approved product options, color zones, and premium
+            upgrades. Your design preview and estimated price update in real
+            time.
           </p>
         </div>
 
@@ -176,10 +196,7 @@ export default function CustomizationPage() {
               />
 
               <div className="mt-6 grid gap-5 md:grid-cols-2">
-                <ReadOnlyField
-                  label="Selected Product"
-                  value={summaryTitle}
-                />
+                <ReadOnlyField label="Selected Product" value={summaryTitle} />
                 <ReadOnlyField label="Size" value={sizeLabel} />
                 <ReadOnlyField
                   label="Production Model"
@@ -188,6 +205,10 @@ export default function CustomizationPage() {
                       ? "Business Card Holder Master V1"
                       : "Small Universal Card Stand"
                   }
+                />
+                <ReadOnlyField
+                  label="Starting Price"
+                  value={`$${basePrice}`}
                 />
               </div>
             </div>
@@ -198,7 +219,7 @@ export default function CustomizationPage() {
                 title="Brand text"
                 text={
                   productType === "business-card"
-                    ? "You can use multiple lines. Designs must stay within the printable front-zone rules."
+                    ? "Use multiple lines if needed. Designs must stay inside approved printable limits."
                     : "Raised front text can be used as part of the card stop design on supported models."
                 }
               />
@@ -208,7 +229,7 @@ export default function CustomizationPage() {
                   <input
                     value={brandName}
                     onChange={(e) => setBrandName(e.target.value)}
-                    placeholder="Example: RamsCardShop"
+                    placeholder="Example: Robs Card Shop"
                     className="w-full rounded-2xl border border-neutral-200 px-4 py-3 outline-none transition focus:border-neutral-950"
                   />
                 </Field>
@@ -241,18 +262,54 @@ export default function CustomizationPage() {
                     />
                   </Field>
                 </div>
+
+                {productType === "business-card" ? (
+                  <InfoBox>
+                    <ul className="space-y-2">
+                      <li>
+                        • Text cannot extend more than 5 mm beyond the left or
+                        right of the front plate.
+                      </li>
+                      <li>
+                        • Text may extend up to 13 mm above the top of the front
+                        plate.
+                      </li>
+                      <li>
+                        • Nothing can extend below the bottom edge of the front
+                        plate.
+                      </li>
+                      <li>
+                        • Minimum printable detail thickness is 0.4 mm.
+                      </li>
+                    </ul>
+                  </InfoBox>
+                ) : (
+                  <InfoBox>
+                    <ul className="space-y-2">
+                      <li>• Universal single-slot stand.</li>
+                      <li>
+                        • Supports raw cards, sleeved cards, top loaders, one
+                        touches, and graded slabs.
+                      </li>
+                      <li>
+                        • Raised text can be used as the card stop where
+                        applicable.
+                      </li>
+                    </ul>
+                  </InfoBox>
+                )}
               </div>
             </div>
 
             <div className="rounded-[30px] border border-neutral-200 bg-white p-6 shadow-sm">
               <SectionTitle
                 eyebrow="Step 4"
-                title="Logo and design style"
-                text="Choose how your logo is applied to the stand."
+                title="Logo and premium options"
+                text="Choose how your branding is applied and whether you want a premium finish."
               />
 
               <div className="mt-6 grid gap-5">
-                <Field label="Upload Logo">
+                <Field label="Upload Logo (+$10)">
                   <div className="rounded-2xl border border-neutral-200 p-4">
                     <input
                       type="file"
@@ -324,10 +381,36 @@ export default function CustomizationPage() {
 
                     <ReadOnlyField
                       label="Logo Placement"
-                      value="Front or top placement finalized inside approved printable zones"
+                      value="Finalized within approved printable zones"
                     />
                   </div>
                 )}
+
+                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-neutral-950">
+                        Premium Finish (+$9)
+                      </p>
+                      <p className="mt-1 text-sm text-neutral-500">
+                        Adds a higher-end upgraded finish tier across all stand
+                        types.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setPremiumFinish((prev) => !prev)}
+                      className={`inline-flex min-w-[110px] items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                        premiumFinish
+                          ? "bg-black text-white"
+                          : "border border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50"
+                      }`}
+                    >
+                      {premiumFinish ? "Added" : "Add Finish"}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -335,10 +418,10 @@ export default function CustomizationPage() {
               <SectionTitle
                 eyebrow="Step 5"
                 title="Colors"
-                text="Pick from approved ForgeDisplay filament colors and preview them before selecting."
+                text={`Choose up to ${MAX_COLORS} total colors. Every additional color beyond the first adds $${EXTRA_COLOR_PRICE}.`}
               />
 
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
+              <div className="mt-6 grid gap-8">
                 <ColorSelector
                   label="Base Color"
                   value={baseColor}
@@ -349,6 +432,20 @@ export default function CustomizationPage() {
                   label="Accent / Text / Logo Color"
                   value={accentColor}
                   onChange={setAccentColor}
+                />
+
+                <ColorSelector
+                  label="Third Color (Optional)"
+                  value={thirdColor}
+                  onChange={setThirdColor}
+                  optional
+                />
+
+                <ColorSelector
+                  label="Fourth Color (Optional)"
+                  value={fourthColor}
+                  onChange={setFourthColor}
+                  optional
                 />
               </div>
             </div>
@@ -390,6 +487,8 @@ export default function CustomizationPage() {
                       line3={line3}
                       baseHex={baseHex}
                       accentHex={accentHex}
+                      thirdHex={thirdHex}
+                      fourthHex={fourthHex}
                     />
                   ) : (
                     <CardStandPreview
@@ -417,12 +516,12 @@ export default function CustomizationPage() {
                       : "No text lines added yet"
                   }
                 />
-                <SummaryRow label="Base Color" value={baseColor} />
-                <SummaryRow label="Accent Color" value={accentColor} />
+                <SummaryRow label="Colors Used" value={uniqueColors.join(", ")} />
                 <SummaryRow
                   label="Logo File"
                   value={logoFileName || "No logo uploaded yet"}
                 />
+
                 {productType === "business-card" ? (
                   <>
                     <SummaryRow
@@ -441,22 +540,27 @@ export default function CustomizationPage() {
                   />
                 )}
 
-                <SummaryRow
-                  label="Starting Price"
-                  value={`$${estimatedPrice}`}
+                <PricingBlock
+                  basePrice={basePrice}
+                  extraColorCount={extraColorCount}
+                  extraColorCharge={extraColorCharge}
+                  logoCharge={logoCharge}
+                  premiumFinishCharge={premiumFinishCharge}
+                  estimatedPrice={estimatedPrice}
                 />
               </div>
 
               <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
                 <p className="font-semibold text-neutral-900">
-                  Pricing Guide
+                  Pricing Structure
                 </p>
                 <ul className="mt-3 space-y-2">
-                  <li>• Business Card Stand base price starts at $24</li>
-                  <li>• Sports Card / TCG Stand base price starts at $20</li>
-                  <li>• Additional color adds approximately $6</li>
-                  <li>• Uploaded logo adds approximately $8</li>
-                  <li>• Premium finish or raised text stop adds approximately $4–$6</li>
+                  <li>• Business Card Stand base price: $40</li>
+                  <li>• Sports Card / TCG Stand base price: $45</li>
+                  <li>• Extra colors: $5 each</li>
+                  <li>• Logo upload: $10</li>
+                  <li>• Premium finish: $9</li>
+                  <li>• Maximum color count: 4 total</li>
                 </ul>
               </div>
 
@@ -536,6 +640,14 @@ function ReadOnlyField({
   );
 }
 
+function InfoBox({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
+      {children}
+    </div>
+  );
+}
+
 function SelectableCard({
   active,
   title,
@@ -573,15 +685,29 @@ function ColorSelector({
   label,
   value,
   onChange,
+  optional = false,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  optional?: boolean;
 }) {
   return (
     <div>
-      <p className="mb-3 text-sm font-medium text-neutral-700">{label}</p>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-neutral-700">{label}</p>
+        {optional && value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 hover:text-black"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {colors.map((color) => (
           <button
             key={color.name}
@@ -589,13 +715,13 @@ function ColorSelector({
             onClick={() => onChange(color.name)}
             className={`rounded-2xl border p-3 text-left transition ${
               value === color.name
-                ? "border-neutral-950 bg-neutral-950 text-white"
+                ? "border-black bg-black text-white shadow-[0_12px_30px_rgba(0,0,0,0.16)]"
                 : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-400"
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-3">
               <span
-                className="h-5 w-5 rounded-full border border-black/10"
+                className="h-10 w-full rounded-xl border border-black/10"
                 style={{ backgroundColor: color.hex }}
               />
               <span className="text-sm font-medium">{color.name}</span>
@@ -624,6 +750,64 @@ function SummaryRow({
   );
 }
 
+function PricingBlock({
+  basePrice,
+  extraColorCount,
+  extraColorCharge,
+  logoCharge,
+  premiumFinishCharge,
+  estimatedPrice,
+}: {
+  basePrice: number;
+  extraColorCount: number;
+  extraColorCharge: number;
+  logoCharge: number;
+  premiumFinishCharge: number;
+  estimatedPrice: number;
+}) {
+  return (
+    <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
+      <p className="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">
+        Estimated Price
+      </p>
+
+      <div className="mt-4 space-y-3">
+        <PriceRow label="Base Stand" value={basePrice} />
+        <PriceRow
+          label={`Extra Colors (${extraColorCount})`}
+          value={extraColorCharge}
+        />
+        <PriceRow label="Logo Upload" value={logoCharge} />
+        <PriceRow label="Premium Finish" value={premiumFinishCharge} />
+      </div>
+
+      <div className="mt-5 flex items-center justify-between border-t border-neutral-300 pt-4">
+        <span className="text-base font-semibold text-neutral-950">
+          Estimated Total
+        </span>
+        <span className="text-2xl font-black tracking-tight text-neutral-950">
+          ${estimatedPrice}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function PriceRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-sm text-neutral-600">{label}</span>
+      <span className="text-sm font-semibold text-neutral-950">${value}</span>
+    </div>
+  );
+}
+
 function BusinessCardPreview({
   brandName,
   line1,
@@ -631,6 +815,8 @@ function BusinessCardPreview({
   line3,
   baseHex,
   accentHex,
+  thirdHex,
+  fourthHex,
 }: {
   brandName: string;
   line1: string;
@@ -638,20 +824,22 @@ function BusinessCardPreview({
   line3: string;
   baseHex: string;
   accentHex: string;
+  thirdHex: string;
+  fourthHex: string;
 }) {
   const mainText = brandName || line1 || "YOUR BRAND";
-  const extraLines = [line1, line2, line3].filter(Boolean).slice(0, 2);
+  const lowerText = [line1, line2, line3].filter(Boolean).slice(0, 2);
 
   return (
-    <div className="relative w-full max-w-[420px]">
-      <div className="absolute left-1/2 top-[83%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
+    <div className="relative w-full max-w-[430px]">
+      <div className="absolute left-1/2 top-[84%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
       <div
-        className="relative mx-auto h-[210px] w-[360px] rounded-[28px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
+        className="relative mx-auto h-[220px] w-[370px] rounded-[28px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
         style={{ backgroundColor: baseHex }}
       >
         <div
-          className="absolute left-1/2 top-[-26px] h-[110px] w-[180px] -translate-x-1/2 rounded-[18px] border border-black/10"
-          style={{ backgroundColor: baseHex }}
+          className="absolute left-1/2 top-[-24px] h-[112px] w-[182px] -translate-x-1/2 rounded-[18px] border border-black/10"
+          style={{ backgroundColor: thirdHex }}
         />
         <div className="absolute inset-x-0 bottom-5 px-5 text-center">
           <div
@@ -660,12 +848,12 @@ function BusinessCardPreview({
           >
             {mainText}
           </div>
-          {extraLines.length > 0 && (
+          {lowerText.length > 0 && (
             <div
               className="mt-2 text-xs font-semibold uppercase tracking-[0.2em]"
-              style={{ color: accentHex }}
+              style={{ color: fourthHex }}
             >
-              {extraLines.join(" • ")}
+              {lowerText.join(" • ")}
             </div>
           )}
         </div>
@@ -690,14 +878,14 @@ function CardStandPreview({
   const text = brandName || line1 || "CARD SHOP";
 
   return (
-    <div className="relative w-full max-w-[420px]">
-      <div className="absolute left-1/2 top-[83%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
+    <div className="relative w-full max-w-[430px]">
+      <div className="absolute left-1/2 top-[84%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
       <div
-        className="relative mx-auto h-[175px] w-[360px] rounded-[24px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
+        className="relative mx-auto h-[180px] w-[365px] rounded-[24px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
         style={{ backgroundColor: baseHex }}
       >
         <div
-          className="absolute left-1/2 top-[16px] h-[105px] w-[250px] -translate-x-1/2 rounded-[16px] border border-black/10"
+          className="absolute left-1/2 top-[16px] h-[108px] w-[250px] -translate-x-1/2 rounded-[16px] border border-black/10"
           style={{ backgroundColor: baseHex }}
         />
 
