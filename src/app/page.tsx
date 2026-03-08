@@ -85,7 +85,7 @@ export default function HomePage() {
 
             <p className="mt-6 max-w-2xl text-xl leading-8 text-neutral-600">
               Designed for collectors, card shops, counters, events, and premium
-              presentation setups.
+              product presentation.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -104,16 +104,16 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="mt-10 grid max-w-2xl gap-4 sm:grid-cols-3">
-              <HeroStat title="Custom Built" text="Made for branded presentation" />
-              <HeroStat title="Premium Finish" text="Designed to look high-end" />
-              <HeroStat title="Multi-Color" text="Segmented color options available" />
+            <div className="mt-12 grid max-w-2xl gap-4 sm:grid-cols-3">
+              <HeroStat title="Custom Built" text="Made for real branded presentation" />
+              <HeroStat title="Premium Finish" text="Designed to look more expensive" />
+              <HeroStat title="Multi-Color" text="Expanded upgrade options available" />
             </div>
           </div>
 
           <div className="flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[660px]">
-              <div className="absolute left-1/2 top-[88%] h-16 w-[70%] -translate-x-1/2 rounded-full bg-black/10 blur-3xl" />
+            <div className="relative w-full max-w-[680px]">
+              <div className="absolute left-1/2 top-[88%] h-16 w-[72%] -translate-x-1/2 rounded-full bg-black/10 blur-3xl" />
               <div className="rounded-[36px] border border-neutral-200 bg-white p-5 shadow-[0_35px_100px_rgba(0,0,0,0.09)]">
                 <Image
                   src="/products/rams-angle.png"
@@ -136,30 +136,31 @@ export default function HomePage() {
               Why ForgeDisplay
             </p>
             <h2 className="mt-4 text-4xl font-bold tracking-tight">
-              Designed to look premium before your customer even touches it.
+              Built to make your setup look more premium before anyone even picks it up.
             </h2>
             <p className="mt-4 text-lg leading-8 text-neutral-600">
-              Every stand is built to present your brand, products, or collection
-              in a cleaner, more professional way.
+              ForgeDisplay stands are designed to help shops, collectors,
+              brands, and sellers present themselves in a cleaner, more
+              professional way.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <ValueCard
               title="Brand-First Design"
-              text="Custom text, logos, and premium presentation choices built around your identity."
+              text="Custom text, logos, and layout choices are built around strong visual presentation."
             />
             <ValueCard
               title="Premium Multi-Color Builds"
-              text="Color-separated elements and custom finishes create a stronger premium feel."
+              text="Segmented colors and upgraded finishes create a more custom, high-end result."
             />
             <ValueCard
               title="Collector & Retail Ready"
-              text="Built for card shops, vendors, collectors, counters, and event displays."
+              text="Ideal for card shops, vendor booths, counters, desks, and showcase setups."
             />
             <ValueCard
-              title="Manufacturing-Conscious"
-              text="Customization is designed within real production limits to keep builds printable and clean."
+              title="Production-Conscious"
+              text="Customization is designed inside real manufacturing limits so every build stays achievable."
             />
           </div>
         </div>
@@ -168,14 +169,14 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-6 py-24">
         <div className="mb-12 max-w-3xl">
           <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
-            Featured Products
+            Featured Stand Types
           </p>
           <h2 className="mt-4 text-4xl font-bold tracking-tight">
-            Premium stand styles for your setup.
+            Premium builds with clear starting points.
           </h2>
           <p className="mt-4 text-lg leading-8 text-neutral-600">
-            Starting price guidance helps set expectations early, while final
-            pricing adjusts based on materials, colors, and design complexity.
+            Starting prices help set expectations early, while final pricing
+            adjusts based on colors, logos, and premium upgrades.
           </p>
         </div>
 
@@ -183,25 +184,25 @@ export default function HomePage() {
           <FeaturedProduct
             image="/products/rams-front.png"
             title="Business Card Stands"
-            price="Starting at $24"
-            text="Clean branded desk displays for counters, offices, receptions, and vendor tables."
+            price="Starting at $40"
+            text="Custom branded desk displays for counters, receptions, offices, vendors, and premium business presentation."
             href="/customization"
             large
           />
 
           <FeaturedProduct
             image="/products/elite-closeup.png"
-            title="Card & TCG Stands"
-            price="Starting at $20"
-            text="Small universal display stands for raw cards, sleeves, top loaders, one touches, and slabs."
+            title="Sports Card & TCG Stands"
+            price="Starting at $45"
+            text="Small universal stands for raw cards, sleeves, top loaders, one touches, and graded slabs."
             href="/customization"
           />
 
           <FeaturedProduct
             image="/products/scorebig-box.png"
             title="Premium Multi-Color Builds"
-            price="Custom quote"
-            text="Advanced segmented builds, stronger branding, and presentation-focused finishes."
+            price="Premium add-ons available"
+            text="Extra colors, logo uploads, and upgraded finishes are available to create more elevated custom builds."
             href="/order"
           />
         </div>
@@ -211,32 +212,72 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 py-24">
           <div className="mb-12 max-w-3xl">
             <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
-              Product Examples
+              Featured Builds
             </p>
             <h2 className="mt-4 text-4xl font-bold tracking-tight">
-              Real custom stands built for real brands.
+              Real examples built for real brands.
             </h2>
             <p className="mt-4 text-lg leading-8 text-neutral-600">
-              A closer look at branded display work created for counters,
-              collectors, product presentation, and retail setups.
+              A closer look at custom stands created for counters, collectors,
+              product presentation, and premium retail setups.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-[32px] border border-neutral-200 bg-white p-5 shadow-sm">
+              <div className="rounded-[24px] bg-white">
+                <Image
+                  src="/products/rams-angle.png"
+                  alt="Premium angled branded display"
+                  width={1200}
+                  height={1200}
+                  className="h-auto w-full rounded-[24px] object-contain"
+                />
+              </div>
+              <div className="mt-6">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">
+                  Featured Example
+                </p>
+                <h3 className="mt-3 text-3xl font-bold tracking-tight">
+                  RamsCardShop Premium Angled Display
+                </h3>
+                <p className="mt-4 max-w-2xl text-neutral-600 leading-7">
+                  A strong example of clean front branding, premium contrast,
+                  and a shape that feels much more elevated than a generic desk
+                  display.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-6">
+              <GalleryCard
+                image="/products/scorebig-holder.png"
+                title="Business Card Holder"
+                text="Designed for counters, reception desks, and front-facing business presentation."
+              />
+              <GalleryCard
+                image="/products/rams-side.png"
+                title="Product Form & Depth"
+                text="Side and angle views help highlight quality, structure, and overall finish."
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
             <GalleryCard
-              image="/products/rams-angle.png"
-              title="Premium Angled Display"
-              text="A cleaner, more editorial product look with strong brand presence."
+              image="/products/rams-front.png"
+              title="Front Branding Focus"
+              text="A clean front-facing presentation built to make the brand the centerpiece."
             />
             <GalleryCard
-              image="/products/scorebig-holder.png"
-              title="Business Card Holder"
-              text="Designed for counters, reception desks, and front-facing business presentation."
+              image="/products/elite-closeup.png"
+              title="Custom Name Display"
+              text="Bold custom lettering creates a stronger premium presence for shops and creators."
             />
             <GalleryCard
-              image="/products/rams-side.png"
-              title="Product Form & Depth"
-              text="Side and angle views help highlight quality, structure, and overall finish."
+              image="/products/scorebig-box.png"
+              title="Product & Box Display"
+              text="Supports product presentation while keeping branding clean and intentional."
             />
           </div>
         </div>
@@ -250,7 +291,7 @@ export default function HomePage() {
                 Ready to build?
               </p>
               <h2 className="mt-4 text-4xl font-bold tracking-tight">
-                Start your custom stand with premium options built in.
+                Start your custom stand with premium options already built in.
               </h2>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-neutral-600">
                 Choose your stand type, colors, text, and branding preferences,
@@ -324,7 +365,7 @@ function ValueCard({
   return (
     <div className="rounded-[28px] border border-neutral-200 bg-white p-6 shadow-sm">
       <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
-      <p className="mt-4 text-neutral-600 leading-7">{text}</p>
+      <p className="mt-4 leading-7 text-neutral-600">{text}</p>
     </div>
   );
 }
@@ -345,11 +386,7 @@ function FeaturedProduct({
   large?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-[32px] border border-neutral-200 bg-white p-5 shadow-sm ${
-        large ? "lg:row-span-1" : ""
-      }`}
-    >
+    <div className="rounded-[32px] border border-neutral-200 bg-white p-5 shadow-sm">
       <div className="rounded-[24px] bg-white">
         <Image
           src={image}
@@ -362,16 +399,13 @@ function FeaturedProduct({
         />
       </div>
 
-      <div className="mt-6 flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
-          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
-            {price}
-          </p>
-        </div>
+      <div className="mt-6">
+        <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
+        <p className="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
+          {price}
+        </p>
+        <p className="mt-4 leading-7 text-neutral-600">{text}</p>
       </div>
-
-      <p className="mt-4 text-neutral-600 leading-7">{text}</p>
 
       <a
         href={href}
@@ -404,7 +438,7 @@ function GalleryCard({
         />
       </div>
       <h3 className="mt-5 text-2xl font-bold tracking-tight">{title}</h3>
-      <p className="mt-3 text-neutral-600 leading-7">{text}</p>
+      <p className="mt-3 leading-7 text-neutral-600">{text}</p>
     </div>
   );
 }
