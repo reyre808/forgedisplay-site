@@ -1,23 +1,36 @@
 "use client";
 
-import { ChangeEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState, type ChangeEvent, type ReactNode } from "react";
 
 type ProductType = "business-card" | "card-stand";
-type BusinessLogoStyle = "raised" | "engraved-fill" | "flat-inlay" | "logo-plate";
+type BusinessLogoStyle =
+  | "raised"
+  | "engraved-fill"
+  | "flat-inlay"
+  | "logo-plate";
 type BusinessLogoPlacement = "front" | "top" | "raised-top";
 type CardStopStyle = "raised-text-stop" | "solid-front-lip";
 
-const colors = [
-  "Black",
-  "White",
-  "Red",
-  "Grey",
-  "Military Green",
-  "Twinkling Pink",
-  "Silk Blue",
+type ColorOption = {
+  name: string;
+  hex: string;
+};
+
+const colors: ColorOption[] = [
+  { name: "Black", hex: "#111111" },
+  { name: "White", hex: "#F5F5F5" },
+  { name: "Red", hex: "#C62828" },
+  { name: "Grey", hex: "#7A7A7A" },
+  { name: "Military Green", hex: "#556B2F" },
+  { name: "Twinkling Pink", hex: "#F48FB1" },
+  { name: "Silk Blue", hex: "#3F6FD1" },
+  { name: "Khaki", hex: "#B6A168" },
 ];
 
 export default function CustomizationPage() {
+  const router = useRouter();
+
   const [productType, setProductType] = useState<ProductType>("business-card");
 
   const [brandName, setBrandName] = useState("");
@@ -44,11 +57,9 @@ export default function CustomizationPage() {
   }
 
   const sizeLabel = useMemo(() => {
-    if (productType === "business-card") {
-      return "Standard Fixed Size";
-    }
-
-    return "Small Universal Size";
+    return productType === "business-card"
+      ? "Standard Fixed Size"
+      : "Small Universal Size";
   }, [productType]);
 
   const summaryTitle = useMemo(() => {
@@ -58,6 +69,61 @@ export default function CustomizationPage() {
   }, [productType]);
 
   const displayTextLines = [line1, line2, line3].filter(Boolean);
+
+  const basePrice = useMemo(() => {
+    return productType === "business-card" ? 24 : 20;
+  }, [productType]);
+
+  const extraColorCharge = useMemo(() => {
+    return baseColor !== accentColor ? 6 : 0;
+  }, [baseColor, accentColor]);
+
+  const logoCharge = useMemo(() => {
+    return logoFileName ? 8 : 0;
+  }, [logoFileName]);
+
+  const premiumFinishCharge = useMemo(() => {
+    if (productType === "business-card") {
+      return logoStyle === "engraved-fill" ||
+        logoStyle === "flat-inlay" ||
+        logoStyle === "logo-plate"
+        ? 6
+        : 0;
+    }
+
+    return cardStopStyle === "solid-front-lip" ? 0 : 4;
+  }, [productType, logoStyle, cardStopStyle]);
+
+  const estimatedPrice = basePrice + extraColorCharge + logoCharge + premiumFinishCharge;
+
+  const baseHex =
+    colors.find((c) => c.name === baseColor)?.hex ?? "#111111";
+  const accentHex =
+    colors.find((c) => c.name === accentColor)?.hex ?? "#F5F5F5";
+
+  function continueToOrder() {
+    const config = {
+      productType,
+      sizeLabel,
+      brandName,
+      line1,
+      line2,
+      line3,
+      baseColor,
+      accentColor,
+      logoFileName,
+      logoStyle,
+      logoPlacement,
+      cardStopStyle,
+      notes,
+      qrIncluded: true,
+      qrPlacement: "Underside of base",
+      estimatedPrice,
+    };
+
+    window.sessionStorage.setItem("fd-custom-config", JSON.stringify(config));
+    router.push("/order");
+  }
 
   return (
     <main className="min-h-screen bg-white text-neutral-950">
@@ -70,9 +136,9 @@ export default function CustomizationPage() {
             Build your custom stand
           </h1>
           <p className="mt-5 text-lg text-neutral-600">
-            Configure your stand using approved options that are designed to
-            stay inside real production limits. Every stand includes the
-            ForgeDisplay QR on the underside of the base.
+            Configure your stand using approved options designed to stay inside
+            real production limits. Your preview updates in real time as you
+            customize.
           </p>
         </div>
 
@@ -112,20 +178,13 @@ export default function CustomizationPage() {
               <div className="mt-6 grid gap-5 md:grid-cols-2">
                 <ReadOnlyField
                   label="Selected Product"
-                  value={
-                    productType === "business-card"
-                      ? "Business Card Stand"
-                      : "Sports Card / TCG Stand"
-                  }
+                  value={summaryTitle}
                 />
-
                 <ReadOnlyField label="Size" value={sizeLabel} />
-
                 <ReadOnlyField
                   label="QR Code"
                   value="Included automatically on underside of base"
                 />
-
                 <ReadOnlyField
                   label="Production Model"
                   value={
@@ -186,44 +245,6 @@ export default function CustomizationPage() {
                     />
                   </Field>
                 </div>
-
-                {productType === "business-card" ? (
-                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
-                    Business Card Stand rules:
-                    <ul className="mt-3 space-y-2">
-                      <li>
-                        • Text cannot extend more than 5 mm beyond the left or
-                        right of the front plate.
-                      </li>
-                      <li>
-                        • Text may extend up to 13 mm above the top of the front
-                        plate.
-                      </li>
-                      <li>
-                        • Nothing can extend below the bottom edge of the front
-                        plate.
-                      </li>
-                      <li>
-                        • Minimum printable detail thickness is 0.4 mm.
-                      </li>
-                    </ul>
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
-                    Sports Card / TCG Stand rules:
-                    <ul className="mt-3 space-y-2">
-                      <li>• Universal single-slot stand.</li>
-                      <li>
-                        • Supports raw cards, sleeved cards, top loaders, one
-                        touches, and graded slabs.
-                      </li>
-                      <li>
-                        • Raised text can be used as the card stop where
-                        applicable.
-                      </li>
-                    </ul>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -292,9 +313,7 @@ export default function CustomizationPage() {
                       <select
                         value={cardStopStyle}
                         onChange={(e) =>
-                          setCardStopStyle(
-                            e.target.value as CardStopStyle
-                          )
+                          setCardStopStyle(e.target.value as CardStopStyle)
                         }
                         className="w-full rounded-2xl border border-neutral-200 px-4 py-3 outline-none transition focus:border-neutral-950"
                       >
@@ -309,7 +328,7 @@ export default function CustomizationPage() {
 
                     <ReadOnlyField
                       label="Logo Placement"
-                      value="Front or top placement will be finalized inside approved printable zones"
+                      value="Front or top placement finalized inside approved printable zones"
                     />
                   </div>
                 )}
@@ -320,7 +339,7 @@ export default function CustomizationPage() {
               <SectionTitle
                 eyebrow="Step 5"
                 title="Colors"
-                text="Choose from currently approved ForgeDisplay filament colors."
+                text="Pick from approved ForgeDisplay filament colors and preview them before selecting."
               />
 
               <div className="mt-6 grid gap-6 md:grid-cols-2">
@@ -359,17 +378,37 @@ export default function CustomizationPage() {
           <div className="space-y-6">
             <div className="sticky top-24 rounded-[30px] border border-neutral-200 bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
               <p className="text-sm font-medium uppercase tracking-[0.28em] text-neutral-500">
-                Live Summary
+                Live Preview
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight">
                 {summaryTitle}
               </h2>
 
+              <div className="mt-6 rounded-[28px] border border-neutral-200 bg-neutral-50 p-6">
+                <div className="flex min-h-[280px] items-center justify-center">
+                  {productType === "business-card" ? (
+                    <BusinessCardPreview
+                      brandName={brandName}
+                      line1={line1}
+                      line2={line2}
+                      line3={line3}
+                      baseHex={baseHex}
+                      accentHex={accentHex}
+                    />
+                  ) : (
+                    <CardStandPreview
+                      brandName={brandName}
+                      line1={line1}
+                      baseHex={baseHex}
+                      accentHex={accentHex}
+                      cardStopStyle={cardStopStyle}
+                    />
+                  )}
+                </div>
+              </div>
+
               <div className="mt-6 space-y-4">
-                <SummaryRow
-                  label="Size"
-                  value={sizeLabel}
-                />
+                <SummaryRow label="Size" value={sizeLabel} />
                 <SummaryRow
                   label="Brand Name"
                   value={brandName || "Not entered yet"}
@@ -382,14 +421,8 @@ export default function CustomizationPage() {
                       : "No text lines added yet"
                   }
                 />
-                <SummaryRow
-                  label="Base Color"
-                  value={baseColor}
-                />
-                <SummaryRow
-                  label="Accent Color"
-                  value={accentColor}
-                />
+                <SummaryRow label="Base Color" value={baseColor} />
+                <SummaryRow label="Accent Color" value={accentColor} />
                 <SummaryRow
                   label="Logo File"
                   value={logoFileName || "No logo uploaded yet"}
@@ -416,27 +449,34 @@ export default function CustomizationPage() {
                     value={formatCardStopStyle(cardStopStyle)}
                   />
                 )}
+
+                <SummaryRow
+                  label="Starting Price"
+                  value={`$${estimatedPrice}`}
+                />
               </div>
 
               <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
                 <p className="font-semibold text-neutral-900">
-                  Production Notes
+                  Pricing Guide
                 </p>
                 <ul className="mt-3 space-y-2">
-                  <li>• QR code is always included on the bottom of the base.</li>
-                  <li>• Final geometry must remain inside approved print-safe zones.</li>
-                  <li>• Unsupported floating details will be rejected.</li>
-                  <li>• More advanced live model preview is coming next.</li>
+                  <li>• Business Card Stand base price starts at $24</li>
+                  <li>• Sports Card / TCG Stand base price starts at $20</li>
+                  <li>• Additional color adds approximately $6</li>
+                  <li>• Uploaded logo adds approximately $8</li>
+                  <li>• Premium finish or raised text stop adds approximately $4–$6</li>
                 </ul>
               </div>
 
               <div className="mt-8 flex flex-col gap-3">
-                <a
-                  href="/order"
+                <button
+                  type="button"
+                  onClick={continueToOrder}
                   className="inline-flex items-center justify-center rounded-xl bg-black px-6 py-4 font-semibold text-white transition hover:bg-neutral-800"
                 >
                   Continue to Order Request
-                </a>
+                </button>
 
                 <a
                   href="/contact"
@@ -478,7 +518,7 @@ function Field({
   children,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div>
@@ -553,16 +593,22 @@ function ColorSelector({
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {colors.map((color) => (
           <button
-            key={color}
+            key={color.name}
             type="button"
-            onClick={() => onChange(color)}
-            className={`rounded-2xl border px-4 py-3 text-sm font-medium transition ${
-              value === color
+            onClick={() => onChange(color.name)}
+            className={`rounded-2xl border p-3 text-left transition ${
+              value === color.name
                 ? "border-neutral-950 bg-neutral-950 text-white"
                 : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-400"
             }`}
           >
-            {color}
+            <div className="flex items-center gap-3">
+              <span
+                className="h-5 w-5 rounded-full border border-black/10"
+                style={{ backgroundColor: color.hex }}
+              />
+              <span className="text-sm font-medium">{color.name}</span>
+            </div>
           </button>
         ))}
       </div>
@@ -583,6 +629,104 @@ function SummaryRow({
       <span className="max-w-[60%] text-right font-semibold text-neutral-950">
         {value}
       </span>
+    </div>
+  );
+}
+
+function BusinessCardPreview({
+  brandName,
+  line1,
+  line2,
+  line3,
+  baseHex,
+  accentHex,
+}: {
+  brandName: string;
+  line1: string;
+  line2: string;
+  line3: string;
+  baseHex: string;
+  accentHex: string;
+}) {
+  const mainText = brandName || line1 || "YOUR BRAND";
+  const extraLines = [line1, line2, line3].filter(Boolean).slice(0, 2);
+
+  return (
+    <div className="relative w-full max-w-[420px]">
+      <div className="absolute left-1/2 top-[83%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
+      <div
+        className="relative mx-auto h-[210px] w-[360px] rounded-[28px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
+        style={{ backgroundColor: baseHex }}
+      >
+        <div
+          className="absolute left-1/2 top-[-26px] h-[110px] w-[180px] -translate-x-1/2 rounded-[18px] border border-black/10"
+          style={{ backgroundColor: baseHex }}
+        />
+        <div className="absolute inset-x-0 bottom-5 px-5 text-center">
+          <div
+            className="text-[28px] font-black uppercase tracking-wide"
+            style={{ color: accentHex }}
+          >
+            {mainText}
+          </div>
+          {extraLines.length > 0 && (
+            <div
+              className="mt-2 text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{ color: accentHex }}
+            >
+              {extraLines.join(" • ")}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CardStandPreview({
+  brandName,
+  line1,
+  baseHex,
+  accentHex,
+  cardStopStyle,
+}: {
+  brandName: string;
+  line1: string;
+  baseHex: string;
+  accentHex: string;
+  cardStopStyle: CardStopStyle;
+}) {
+  const text = brandName || line1 || "CARD SHOP";
+
+  return (
+    <div className="relative w-full max-w-[420px]">
+      <div className="absolute left-1/2 top-[83%] h-8 w-56 -translate-x-1/2 rounded-full bg-black/15 blur-2xl" />
+      <div
+        className="relative mx-auto h-[175px] w-[360px] rounded-[24px] border border-black/10 shadow-[0_24px_60px_rgba(0,0,0,0.15)]"
+        style={{ backgroundColor: baseHex }}
+      >
+        <div
+          className="absolute left-1/2 top-[16px] h-[105px] w-[250px] -translate-x-1/2 rounded-[16px] border border-black/10"
+          style={{ backgroundColor: baseHex }}
+        />
+
+        <div className="absolute inset-x-0 bottom-4 px-4 text-center">
+          <div
+            className="text-[22px] font-black uppercase tracking-wide"
+            style={{ color: accentHex }}
+          >
+            {text}
+          </div>
+          <div
+            className="mt-2 text-xs font-semibold uppercase tracking-[0.18em]"
+            style={{ color: accentHex }}
+          >
+            {cardStopStyle === "raised-text-stop"
+              ? "Raised Text Stop"
+              : "Solid Front Lip"}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
