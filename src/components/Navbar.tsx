@@ -17,7 +17,6 @@ export default function Navbar() {
 
       <div className="flex items-center gap-8 text-sm font-medium">
         <Link href="/customization">Customization</Link>
-        <Link href="/qr">QR Integration</Link>
         <Link href="/reviews">Reviews</Link>
         <Link href="/contact">Contact</Link>
       </div>

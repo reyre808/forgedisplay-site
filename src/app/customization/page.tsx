@@ -423,11 +423,6 @@ export default function CustomizationPage() {
                   label="Logo File"
                   value={logoFileName || "No logo uploaded yet"}
                 />
-                <SummaryRow
-                  label="QR"
-                  value="Included automatically on underside"
-                />
-
                 {productType === "business-card" ? (
                   <>
                     <SummaryRow
