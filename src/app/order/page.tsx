@@ -190,11 +190,6 @@ export default function OrderPage() {
                 label="Logo File"
                 value={config?.logoFileName || "No file selected"}
               />
-              <SummaryRow
-                label="QR"
-                value="Included automatically on underside"
-              />
-
               {config?.productType === "business-card" ? (
                 <>
                   <SummaryRow

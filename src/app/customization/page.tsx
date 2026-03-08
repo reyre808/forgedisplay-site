@@ -182,10 +182,6 @@ export default function CustomizationPage() {
                 />
                 <ReadOnlyField label="Size" value={sizeLabel} />
                 <ReadOnlyField
-                  label="QR Code"
-                  value="Included automatically on underside of base"
-                />
-                <ReadOnlyField
                   label="Production Model"
                   value={
                     productType === "business-card"
